@@ -5,399 +5,534 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MBTI 性格测试</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  min-height:100vh;color:#e0e0e0;
+  display:flex;justify-content:center;align-items:center;
+}
+.container{width:100%;max-width:680px;padding:20px}
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-  min-height: 100vh;
-  color: #e0e0e0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Welcome */
+.welcome{text-align:center;animation:fadeIn .8s}
+.welcome h1{
+  font-size:2.4rem;margin-bottom:16px;
+  background:linear-gradient(90deg,#a78bfa,#60a5fa,#34d399);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
+.welcome .sub{font-size:1.05rem;color:#94a3b8;line-height:1.7;margin-bottom:8px}
+.welcome .meta{font-size:.85rem;color:#64748b;margin-bottom:24px}
+.nickname-wrap{margin-bottom:24px}
+.nickname-wrap input{
+  padding:12px 20px;border-radius:12px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:#f1f5f9;font-size:1rem;
+  width:260px;text-align:center;outline:none;transition:border .25s;
+}
+.nickname-wrap input:focus{border-color:#7c3aed}
+.nickname-wrap input::placeholder{color:#64748b}
 
-.container {
-  width: 100%;
-  max-width: 640px;
-  padding: 20px;
+/* Buttons */
+.btn{
+  display:inline-block;padding:14px 48px;border:none;border-radius:12px;
+  font-size:1.05rem;font-weight:600;cursor:pointer;transition:all .25s;
 }
+.btn-primary{
+  background:linear-gradient(135deg,#7c3aed,#3b82f6);color:#fff;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,.4)}
 
-/* ===== Welcome ===== */
-.welcome {
-  text-align: center;
-  animation: fadeIn 0.8s;
+/* Progress */
+.progress-wrap{margin-bottom:28px}
+.progress-bar-bg{height:6px;background:#1e293b;border-radius:3px;overflow:hidden}
+.progress-bar-fill{
+  height:100%;background:linear-gradient(90deg,#7c3aed,#3b82f6);
+  border-radius:3px;transition:width .4s ease;
 }
-.welcome h1 {
-  font-size: 2.4rem;
-  background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 16px;
-}
-.welcome p {
-  font-size: 1.05rem;
-  color: #94a3b8;
-  line-height: 1.7;
-  margin-bottom: 32px;
-}
-.welcome .meta {
-  font-size: 0.85rem;
-  color: #64748b;
-  margin-bottom: 28px;
-}
+.progress-text{text-align:right;font-size:.8rem;color:#64748b;margin-top:6px}
 
-/* ===== Buttons ===== */
-.btn {
-  display: inline-block;
-  padding: 14px 48px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s;
+/* Question */
+.question-page{animation:fadeIn .5s}
+.question-page .dim-label{
+  font-size:.8rem;text-transform:uppercase;letter-spacing:2px;
+  color:#a78bfa;margin-bottom:12px;
 }
-.btn-primary {
-  background: linear-gradient(135deg, #7c3aed, #3b82f6);
-  color: #fff;
+.question-page h2{font-size:1.25rem;line-height:1.6;margin-bottom:28px;color:#f1f5f9}
+.options{display:flex;flex-direction:column;gap:12px}
+.option-btn{
+  padding:16px 20px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);border-radius:12px;
+  color:#cbd5e1;font-size:1rem;cursor:pointer;text-align:left;transition:all .2s;
 }
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(124,58,237,0.4);
-}
+.option-btn:hover{background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.4);color:#f1f5f9}
+.option-btn.selected{background:rgba(124,58,237,.25);border-color:#7c3aed;color:#fff}
 
-/* ===== Progress ===== */
-.progress-wrap {
-  margin-bottom: 28px;
+/* Result */
+.result-page{animation:fadeIn .8s}
+.result-header{text-align:center;margin-bottom:28px}
+.result-header .type-code{
+  font-size:3.2rem;font-weight:800;
+  background:linear-gradient(90deg,#a78bfa,#60a5fa,#34d399);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.progress-bar-bg {
-  height: 6px;
-  background: #1e293b;
-  border-radius: 3px;
-  overflow: hidden;
-}
-.progress-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #7c3aed, #3b82f6);
-  border-radius: 3px;
-  transition: width 0.4s ease;
-}
-.progress-text {
-  text-align: right;
-  font-size: 0.8rem;
-  color: #64748b;
-  margin-top: 6px;
-}
+.result-header .type-name{font-size:1.3rem;color:#94a3b8}
 
-/* ===== Question ===== */
-.question-page { animation: fadeIn 0.5s; }
-.question-page .dim-label {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: #a78bfa;
-  margin-bottom: 12px;
+/* Sections */
+.section{
+  background:rgba(255,255,255,.04);border-radius:16px;
+  padding:24px;margin-bottom:16px;
 }
-.question-page h2 {
-  font-size: 1.3rem;
-  line-height: 1.6;
-  margin-bottom: 28px;
-  color: #f1f5f9;
-}
-.options { display: flex; flex-direction: column; gap: 12px; }
-.option-btn {
-  padding: 16px 20px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  color: #cbd5e1;
-  font-size: 1rem;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.2s;
-}
-.option-btn:hover {
-  background: rgba(124,58,237,0.15);
-  border-color: rgba(124,58,237,0.4);
-  color: #f1f5f9;
-}
-.option-btn.selected {
-  background: rgba(124,58,237,0.25);
-  border-color: #7c3aed;
-  color: #fff;
-}
+.section h3{font-size:1rem;color:#a78bfa;margin-bottom:12px}
+.section p,.section li{line-height:1.8;color:#cbd5e1;font-size:.93rem}
+.section ul{padding-left:20px;margin-bottom:8px}
+.section li{margin-bottom:4px}
 
-/* ===== Result ===== */
-.result-page { text-align: center; animation: fadeIn 0.8s; }
-.result-page .type-code {
-  font-size: 3.2rem;
-  font-weight: 800;
-  background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 4px;
+/* Dim bars */
+.dim-bars{margin-bottom:4px}
+.dim-row{margin-bottom:14px}
+.dim-row .label{display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:5px;color:#94a3b8}
+.dim-row .bar-bg{height:8px;background:#1e293b;border-radius:4px;overflow:hidden;position:relative}
+.dim-row .bar-left{position:absolute;left:0;top:0;height:100%;background:#7c3aed;border-radius:4px 0 0 4px;transition:width .6s ease}
+.dim-row .bar-right{position:absolute;right:0;top:0;height:100%;background:#3b82f6;border-radius:0 4px 4px 0;transition:width .6s ease}
+
+/* Compatibility */
+.compat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.compat-item{text-align:center;padding:10px 6px;border-radius:10px;background:rgba(255,255,255,.04);font-size:.85rem}
+.compat-item .level{font-size:.75rem;color:#64748b;margin-top:2px}
+.compat-item.good{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.3)}
+.compat-item.ok{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3)}
+.compat-item.hard{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3)}
+
+.actions{display:flex;gap:12px;justify-content:center;margin-top:24px}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:12px 32px;border-radius:10px;font-size:.95rem;cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:#a78bfa;color:#e0e0e0}
+.btn-small{padding:8px 20px;font-size:.85rem}
+
+.hidden{display:none !important}
+
+/* Loading */
+.loading{text-align:center;padding:60px 20px;animation:fadeIn .5s}
+.spinner{
+  width:40px;height:40px;margin:0 auto 16px;
+  border:3px solid rgba(124,58,237,.3);border-top-color:#7c3aed;
+  border-radius:50%;animation:spin .8s linear infinite;
 }
-.result-page .type-name {
-  font-size: 1.2rem;
-  color: #94a3b8;
-  margin-bottom: 24px;
-}
-.result-page .type-desc {
-  text-align: left;
-  background: rgba(255,255,255,0.04);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 28px;
-  line-height: 1.8;
-  color: #cbd5e1;
-  font-size: 0.95rem;
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+  background:#7c3aed;color:#fff;padding:10px 24px;border-radius:20px;
+  font-size:.9rem;z-index:999;animation:fadeIn .3s;box-shadow:0 4px 16px rgba(124,58,237,.4);
 }
 
-/* Dimension bars */
-.dim-bars {
-  text-align: left;
-  margin-bottom: 28px;
-}
-.dim-row {
-  margin-bottom: 14px;
-}
-.dim-row .label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  margin-bottom: 5px;
-  color: #94a3b8;
-}
-.bar-bg {
-  height: 8px;
-  background: #1e293b;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-.bar-left {
-  position: absolute;
-  left: 0; top: 0; height: 100%;
-  background: #7c3aed;
-  border-radius: 4px 0 0 4px;
-  transition: width 0.6s ease;
-}
-.bar-right {
-  position: absolute;
-  right: 0; top: 0; height: 100%;
-  background: #3b82f6;
-  border-radius: 0 4px 4px 0;
-  transition: width 0.6s ease;
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-.btn-outline {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #94a3b8;
-}
-.btn-outline:hover {
-  border-color: #a78bfa;
-  color: #e0e0e0;
-}
-
-.hidden { display: none !important; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+@media(max-width:480px){
+  .container{padding:12px}
+  .welcome h1{font-size:1.8rem}
+  .result-header .type-code{font-size:2.4rem}
+  .section{padding:16px}
 }
 </style>
 </head>
 <body>
-
 <div class="container">
-  <!-- Welcome -->
-  <div id="welcome" class="welcome">
-    <h1>MBTI 性格测试</h1>
-    <p>通过 24 道题目，探索你的性格类型。<br>没有对错之分，选择最符合你真实感受的选项。</p>
-    <p class="meta">大约需要 3-5 分钟</p>
-    <button class="btn btn-primary" onclick="startTest()">开始测试</button>
-  </div>
 
-  <!-- Question -->
-  <div id="questionPage" class="question-page hidden">
-    <div class="progress-wrap">
-      <div class="progress-bar-bg">
-        <div class="progress-bar-fill" id="progressFill"></div>
-      </div>
-      <div class="progress-text" id="progressText"></div>
-    </div>
-    <div class="dim-label" id="dimLabel"></div>
-    <h2 id="questionText"></h2>
-    <div class="options" id="options"></div>
+<!-- Welcome -->
+<div id="welcome" class="welcome">
+  <h1>MBTI 性格测试</h1>
+  <p class="sub">500 题库随机抽取 100 题，深入探索你的性格类型<br>没有对错之分，选择最符合你真实感受的选项</p>
+  <p class="meta">大约需要 8-12 分钟 · 每题 2 个选项</p>
+  <div class="nickname-wrap">
+    <input type="text" id="nickname" placeholder="输入你的昵称（可选）" maxlength="20">
   </div>
-
-  <!-- Result -->
-  <div id="resultPage" class="result-page hidden">
-    <div class="type-code" id="typeCode"></div>
-    <div class="type-name" id="typeName"></div>
-    <div class="type-desc" id="typeDesc"></div>
-    <div class="dim-bars" id="dimBars"></div>
-    <div class="actions">
-      <button class="btn btn-outline" onclick="restart()">重新测试</button>
-    </div>
-  </div>
+  <button class="btn btn-primary" onclick="startTest()">开始测试</button>
 </div>
 
+<!-- Loading -->
+<div id="loading" class="loading hidden">
+  <div class="spinner"></div>
+  <p style="color:#94a3b8">加载题库中...</p>
+</div>
+
+<!-- Question -->
+<div id="questionPage" class="question-page hidden">
+  <div class="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText"></div>
+  </div>
+  <div class="dim-label" id="dimLabel"></div>
+  <h2 id="questionText"></h2>
+  <div class="options" id="options"></div>
+</div>
+
+<!-- Result -->
+<div id="resultPage" class="result-page hidden">
+  <div class="result-header">
+    <div class="type-code" id="typeCode"></div>
+    <div class="type-name" id="typeName"></div>
+  </div>
+
+  <div class="section" id="descSection">
+    <h3>性格概述</h3>
+    <p id="typeDesc"></p>
+  </div>
+
+  <div class="section">
+    <h3>维度倾向</h3>
+    <div class="dim-bars" id="dimBars"></div>
+  </div>
+
+  <div class="section" id="strengthsSection">
+    <h3>核心优势</h3>
+    <ul id="strengths"></ul>
+  </div>
+
+  <div class="section" id="challengesSection">
+    <h3>成长建议</h3>
+    <ul id="challenges"></ul>
+  </div>
+
+  <div class="section" id="careerSection">
+    <h3>职业方向</h3>
+    <ul id="career"></ul>
+  </div>
+
+  <div class="section" id="relationSection">
+    <h3>人际关系</h3>
+    <p id="relation"></p>
+  </div>
+
+  <div class="section">
+    <h3>与你相似的名人</h3>
+    <p id="famous"></p>
+  </div>
+
+  <div class="section">
+    <h3>MBTI 兼容性</h3>
+    <div class="compat-grid" id="compatGrid"></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-outline" onclick="restart()">重新测试</button>
+  </div>
+</div>
+</div>
+
+<script src="questions.json"></script>
 <script>
-const questions = [
-  // E/I
-  { dim: "EI", text: "在聚会中，你通常会：", opts: ["主动与很多人交谈，包括陌生人", "主要和认识的朋友聊天"], scores: [1, -1] },
-  { dim: "EI", text: "你觉得独处的时间：", opts: ["让人疲惫，更喜欢和人在一起", "让人充电，需要定期独处"], scores: [-1, 1] },
-  { dim: "EI", text: "在团队中，你更倾向于：", opts: ["主动发言和表达想法", "先倾听，再在合适的时候发言"], scores: [1, -1] },
-  { dim: "EI", text: "周末你更愿意：", opts: ["参加社交活动或聚会", "在家看书、看电影或做自己的事"], scores: [1, -1] },
-  { dim: "EI", text: "认识新朋友对你来说：", opts: ["很容易，也很享受", "需要时间，但一旦熟悉就很深入"], scores: [1, -1] },
-  { dim: "EI", text: "工作中你更喜欢：", opts: ["开放式办公，方便随时交流", "安静的环境，减少被打扰"], scores: [1, -1] },
+// Load questions from external JSON
+let allQuestions = [];
 
-  // S/N
-  { dim: "SN", text: "你更信任：", opts: ["实际经验和已验证的事实", "直觉和潜在的可能性"], scores: [-1, 1] },
-  { dim: "SN", text: "学习新事物时，你更喜欢：", opts: ["循序渐进，从具体细节开始", "先了解整体框架和概念"], scores: [-1, 1] },
-  { dim: "SN", text: "你更关注：", opts: ["当下的现实和具体需求", "未来的可能性和趋势"], scores: [-1, 1] },
-  { dim: "SN", text: "描述一件事时，你倾向于：", opts: ["按时间顺序讲清楚每个步骤", "突出重点，跳跃式叙述"], scores: [-1, 1] },
-  { dim: "SN", text: "你更喜欢的工作是：", opts: ["有明确流程和标准的", "允许创新和自由发挥的"], scores: [-1, 1] },
-  { dim: "SN", text: "别人形容你更像是：", opts: ["务实、脚踏实地", "有想象力、善于联想"], scores: [-1, 1] },
+async function fetchQuestions() {
+  try {
+    const res = await fetch('questions.json');
+    allQuestions = await res.json();
+  } catch(e) {
+    console.error('Failed to load questions:', e);
+    showToast('题库加载失败，请刷新页面重试');
+  }
+}
+fetchQuestions();
 
-  // T/F
-  { dim: "TF", text: "做决定时，你更看重：", opts: ["逻辑分析和客观标准", "他人的感受和价值观"], scores: [-1, 1] },
-  { dim: "TF", text: "朋友向你倾诉烦恼时，你通常会：", opts: ["帮TA分析问题、找出解决方案", "先倾听和共情，给予情感支持"], scores: [-1, 1] },
-  { dim: "TF", text: "你认为更重要的是：", opts: ["诚实，即使可能伤害到别人", "和谐，尽量避免让别人不舒服"], scores: [-1, 1] },
-  { dim: "TF", text: "批评别人时，你会：", opts: ["直接指出问题，对事不对人", "先肯定优点，再委婉提出改进"], scores: [-1, 1] },
-  { dim: "TF", text: "面对冲突时，你更倾向于：", opts: ["就事论事，讲道理", "考虑各方感受，寻求共识"], scores: [-1, 1] },
-  { dim: "TF", text: "你更欣赏的评价是：", opts: ["\"你很理性，分析能力很强\"", "\"你很温暖，善于理解别人\""], scores: [-1, 1] },
+const dimNames = {EI:["外向 E","内向 I"],SN:["实感 S","直觉 N"],TF:["思考 T","情感 F"],JP:["判断 J","感知 P"]};
 
-  // J/P
-  { dim: "JP", text: "对于计划，你的态度是：", opts: ["提前规划好，按计划执行", "保持灵活，随机应变"], scores: [-1, 1] },
-  { dim: "JP", text: "你的工作空间通常是：", opts: ["整洁有序，每样东西有固定位置", "看起来乱但自己能找到东西"], scores: [-1, 1] },
-  { dim: "JP", text: "面对截止日期，你通常会：", opts: ["尽早完成，留出缓冲时间", "在压力下最后冲刺完成"], scores: [-1, 1] },
-  { dim: "JP", text: "旅行时你更喜欢：", opts: ["提前订好行程和酒店", "到了再说，享受即兴的感觉"], scores: [-1, 1] },
-  { dim: "JP", text: "你更习惯的做事方式是：", opts: ["列清单、按步骤完成", "凭感觉，想到什么做什么"], scores: [-1, 1] },
-  { dim: "JP", text: "突然的变化对你来说：", opts: ["让人不安，更喜欢稳定", "新鲜有趣，不喜欢一成不变"], scores: [-1, 1] },
-];
-
-const dimNames = {
-  EI: ["外向 (E)", "内向 (I)"],
-  SN: ["实感 (S)", "直觉 (N)"],
-  TF: ["思考 (T)", "情感 (F)"],
-  JP: ["判断 (J)", "感知 (P)"]
+const typeData = {
+"INTJ":{name:"建筑师",desc:"富有想象力和战略性的思想家，一切都在计划之中。INTJ 是独立的、有远见的人，善于看到全局并制定长期计划。他们追求能力和效率，对自己和他人都有很高的标准。虽然外表冷静理性，但内心有着强烈的信念和对知识的渴望。",
+strengths:["战略思维出众，擅长长期规划","独立自主，不依赖他人","高效执行，追求卓越","善于提炼复杂问题的本质","意志坚定，有自己的原则"],
+challenges:["可能显得过于冷淡，忽略他人感受","完美主义倾向导致压力","不擅长处理不确定和无序的环境","在人际互动中可能显得生硬","需要学习适度妥协"],
+career:["科学家/研究员","工程师/架构师","策略顾问","金融分析师","大学教授"],
+relation:"INTJ 在关系中追求深度和智慧上的共鸣。他们需要伴侣能理解他们的独立性，同时能进行有深度的对话。他们不轻易表达情感，但一旦认定就是长久的承诺。",
+famous:"埃隆·马斯克、弗里德里希·尼采、米歇尔·奥巴马"},
+"INTP":{name:"逻辑学家",desc:"具有创造力的发明家，对知识有着不可抑制的渴望。INTP 善于发现逻辑上的不一致，喜欢探索理论和抽象概念。他们独立思考，追求理解事物的本质，可能显得心不在焉，因为大脑总是在处理各种想法。",
+strengths:["极强的逻辑分析和抽象思维能力","对知识充满好奇，学什么都快","开放包容，不轻易下判断","创新精神，喜欢探索新可能","客观理性，不容易被情绪左右"],
+challenges:["可能过度沉浸在思维中，忽略眼前现实","执行力和自律有待加强","社交场合可能显得疏离","有时过于挑剔和批判","难以完成不感兴趣的任务"],
+career:["程序员/数据科学家","物理学家/数学家","哲学家/作家","UX 研究员","游戏设计师"],
+relation:"INTP 在关系中需要心智上的刺激和充分的自由空间。他们可能不擅长甜言蜜语，但会通过深度的思考和独特的视角来吸引另一半。伴侣需要理解他们需要大量独处时间。",
+famous:"阿尔伯特·爱因斯坦、玛丽·居里、比尔·盖茨"},
+"ENTJ":{name:"指挥官",desc:"大胆、富有想象力且意志强大的领导者，总能找到或创造解决方法。ENTJ 是天生的领导者，善于组织和推动项目。他们果断、自信，注重效率和结果，能够激励他人朝着共同目标前进。",
+strengths:["天生的领导力和组织能力","果断决绝，敢于做艰难的决定","目标感强，执行力一流","善于激励和带动团队","长于战略规划和资源整合"],
+challenges:["可能显得专横，不够考虑他人意见","对效率的追求可能忽略情感需求","不太容忍低效率和能力不足","可能过度控制，不擅长放手","需要学习耐心和同理心"],
+career:["企业 CEO / 高管","管理咨询顾问","律师/法官","政治家","投资银行家"],
+relation:"ENTJ 在关系中也是领导者的角色，他们希望找到一个能与自己并肩作战的伴侣。他们欣赏能力和上进心，会用实际行动来表达爱。需要学习放慢脚步，享受相处的过程。",
+famous:"史蒂夫·乔布斯、玛格丽特·撒切尔、高登·拉姆齐"},
+"ENTP":{name:"辩论家",desc:"聪明好奇的思想家，不会放过任何智力上的挑战。ENTP 喜欢探索各种可能性，善于发现事物之间的联系。他们思维敏捷、口才出众，享受思想碰撞的过程，总能提出新颖的观点。",
+strengths:["思维敏捷，善于快速分析和辩论","创造力丰富，总有点子","适应力强，应对变化游刃有余","幽默风趣，善于活跃气氛","敢于挑战传统和权威"],
+challenges:["可能喜欢争论而忽略他人感受","容易对事物失去兴趣，三分钟热度","执行和跟进的能力有待加强","在需要细节和重复的工作中缺乏耐心","有时不够务实"],
+career:["创业者","产品经理","律师/辩手","记者/评论员","市场营销"],
+relation:"ENTP 在关系中追求智力的火花和新鲜感。他们喜欢和伴侣进行思想上的切磋，需要一个能接住他们各种想法的人。他们害怕无聊，需要关系中有持续的成长和变化。",
+famous:"托马斯·爱迪生、马克·吐温、小罗伯特·唐尼"},
+"INFJ":{name:"提倡者",desc:"安静而神秘，同时富有感召力的理想主义者。INFJ 有着深刻的洞察力，能够理解他人的情感和动机。他们追求有意义的人生，致力于帮助他人和改善世界，有着坚定的信念和价值观。",
+strengths:["深刻洞察人性和动机","强烈的使命感和价值观","极具同理心和倾听能力","创造力与执行力并存","善于发现他人的潜能"],
+challenges:["容易吸收他人的负面情绪","对自己和他人要求过高","难以向他人敞开心扉","对批评和冲突比较敏感","可能需要学习自我照顾"],
+career:["心理咨询师/治疗师","作家/编辑","人力资源/组织发展","医护人员","社工/非营利组织"],
+relation:"INFJ 在关系中追求灵魂的深度连接。他们不会轻易进入一段关系，但一旦认定，就是全身心的投入。他们需要一个能读懂他们内心世界、尊重他们价值观的伴侣。",
+famous:"马丁·路德·金、特蕾莎修女、C·S·刘易斯"},
+"INFP":{name:"调停者",desc:"诗意、善良且利他的人，总是热衷于帮助好的事业。INFP 有着丰富的内心世界，重视真诚和深度。他们富有同理心和创造力，追求与自己价值观一致的生活方式。",
+strengths:["极强的同理心和包容力","创造力丰富，想象力和审美出众","对价值观的坚持和理想主义","善于倾听和给予情感支持","适应力强，灵活多变"],
+challenges:["容易陷入情绪波动","做决定时可能优柔寡断","对批评过于敏感","现实中容易忽视具体事务","可能过于理想化而失望"],
+career:["作家/诗人","平面设计师/艺术家","心理咨询师","教师","公益组织工作者"],
+relation:"INFP 在关系中追求浪漫和深度的情感连接。他们是理想的伴侣——温柔、体贴、忠诚。他们需要伴侣能理解他们丰富的内心世界和不时的情绪波动。",
+famous:"村上春树、J·K·罗琳、约翰尼·德普"},
+"ENFJ":{name:"主人公",desc:"富有感召力的领导者，能够吸引听众并使他们着迷。ENFJ 天生善于理解他人，能够激发他人的潜能。他们注重人际关系，善于沟通协调，致力于为集体创造积极的影响。",
+strengths:["出色的沟通和感染能力","善于发现和培养他人的潜力","强大的组织协调能力","对人真诚热情，值得信赖","有远见且善于把想法落地"],
+challenges:["可能过度承担别人的问题","需要别人的认可，自我价值外化","在帮助别人中可能忽略自己","决策时过于照顾他人忽视自己的需求","面对冲突时容易焦虑"],
+career:["教师/培训师","心理咨询师","人力资源总监","公共关系","政治家/社区领袖"],
+relation:"ENFJ 在关系中追求成长和共同的意义。他们会用心地经营关系，让伴侣感到被珍视。他们需要一个能欣赏他们的付出、也愿意照顾他们内心的人。",
+famous:"奥普拉·温弗瑞、纳尔逊·曼德拉、詹妮弗·劳伦斯"},
+"ENFP":{name:"竞选者",desc:"热情、富有创造力且善于社交的自由精神，总能找到微笑的理由。ENFP 充满热情和想象力，善于看到他人的潜力。他们喜欢探索新的可能性，追求有意义的连接和体验。",
+strengths:["热情洋溢，感染力强","极强的创造力和想象力","善于与人建立连接","灵活多变，适应力强","总能在他人的优点中发现光芒"],
+challenges:["容易失去焦点，难以专注","情绪起伏较大","对常规事务缺乏耐心","做决定时容易犹豫","有时过度操心他人"],
+career:["创意总监/编剧","记者/主持人","企业家/创业者","心理咨询师","用户体验设计师"],
+relation:"ENFP 在关系中追求热情和深度。他们是充满惊喜的伴侣，总会带来新鲜感和浪漫。他们需要伴侣能接受他们的多变和自由，同时能给予足够的情感支持。",
+famous:"罗宾·威廉姆斯、艾伦·德詹尼丝、奥斯卡·王尔德"},
+"ISTJ":{name:"物流师",desc:"实用且注重事实的个体，其可靠性无可怀疑。ISTJ 认真负责，注重细节和传统。他们善于组织和执行，会一丝不苟地完成承诺的事情，是值得信赖的伙伴。",
+strengths:["极强的责任感和可靠性","做事有条理、严谨细致","信守承诺，值得信赖","务实理性，不空谈","在压力下保持冷静"],
+challenges:["可能过于固执和守旧","面对变化时不够灵活","不太善于表达情感和赞美","有时过于关注细节而忽略全局","需要学习放松和即兴"],
+career:["会计/审计师","军警/消防员","法官/公务员","项目管理","医生"],
+relation:"ISTJ 在关系中追求稳定和责任。他们用行动而非言语表达爱，会默默为家庭做好一切。他们需要伴侣理解他们不善言辞的特点，欣赏他们的可靠和忠诚。",
+famous:"乔治·华盛顿、沃伦·巴菲特、娜塔莉·波特曼"},
+"ISFJ":{name:"守卫者",desc:"非常专注且温暖的守护者，时刻准备着保护所爱之人。ISFJ 谦逊体贴，善于观察他人的需求。他们忠诚可靠，默默付出，重视和谐与稳定，在需要的地方提供支持。",
+strengths:["体贴入微，善于照顾他人","忠诚可靠，愿意默默付出","做事认真负责，追求完美","善于营造温馨和谐的氛围","记忆力好，尤其关于人的细节"],
+challenges:["容易忽视自己的需求","不善于拒绝他人","面对变化可能感到焦虑","在冲突中容易退缩","有时过于在意他人的看法"],
+career:["护士/医生","小学教师","社会工作者","行政/秘书","室内设计师"],
+relation:"ISFJ 在关系中是最投入的守护者。他们会用自己的方式——可能是精心准备的饭菜、细致的照料——来表达深深的关爱。他们需要一个懂得珍惜这份踏实感情的伴侣。",
+famous:"英国女王伊丽莎白二世、碧昂丝、罗莎·帕克斯"},
+"ESTJ":{name:"总经理",desc:"出色的管理者，在管理事务或人员方面无与伦比。ESTJ 务实果断，重视秩序和规则。他们善于组织和领导，注重效率和传统，会确保团队按照既定标准运作。",
+strengths:["出色的组织和管理能力","做事果断，执行力强","诚实直接，不绕弯子","责任心强，有担当","遵循规则，可靠稳健"],
+challenges:["可能显得过于强势和固执","对情感需求不够敏感","在创新和灵活性上需要提升","有时过于看重效率和结果","需要注意给他人更多空间"],
+career:["企业管理者","法官/警察","军人","校长/教育管理者","财务总监"],
+relation:"ESTJ 在关系中追求稳定和秩序。他们是可靠的伴侣，会扛起家庭的责任。他们需要伴侣理解他们的务实和直接，同时帮助他们放松和享受生活。",
+famous:"亨利·福特、约翰·D·洛克菲勒、艾玛·沃特森"},
+"ESFJ":{name:"执政官",desc:"极有同情心、受人欢迎且善于社交的人，总是热心帮助他人。ESFJ 温暖友善，重视和谐的人际关系。他们善于照顾他人的需求，喜欢创造温馨的氛围，是团队中的凝聚力量。",
+strengths:["热情周到，善于照顾人","极强的社交和组织能力","重视和谐，善于化解冲突","忠诚可靠，是好朋友伴侣","执行力和责任心强"],
+challenges:["过度在意他人的评价","不擅长接受批评","面对变化时需要适应","可能忽略自己的真实需求","有时过于控制欲"],
+career:["护士/医疗工作者","HR/行政主管","酒店/餐饮管理","公关/活动策划","教师"],
+relation:"ESFJ 在关系中是最温暖体贴的伴侣。他们重视传统和家庭的和谐，会用心经营每一段关系。他们需要伴侣的回应和认可，以及足够的情感安全感。",
+famous:"泰勒·斯威夫特、比尔·克林顿、萨莉·菲尔德"},
+"ISTP":{name:"鉴赏家",desc:"大胆且实际的实验家，擅长使用各种工具。ISTP 灵活冷静，善于解决实际问题。他们喜欢探索事物的运作原理，动手能力强，在压力下能保持冷静并找到解决方案。",
+strengths:["动手能力强，善于解决实际问题","在压力下保持冷静","灵活应变，不受条条框框约束","观察力强，善于发现细节中的问题","独立自主，不需要别人操心"],
+challenges:["不善于表达情感和沟通","可能显得冷漠或漠不关心","长期规划能力有待加强","在重复和规章中容易失去耐心","需要学习建立更深的人际连接"],
+career:["工程师/技工","飞行员/驾驶员","外科医生","法医/犯罪现场调查","程序员/黑客"],
+relation:"ISTP 在关系中追求自由和行动。他们用行动而非言语表达爱——修好你坏掉的东西、带你一起冒险。他们需要伴侣给他们充分的个人空间和信任。",
+famous:"汤姆·克鲁斯、哈里森·福特、迈尔斯·戴维斯"},
+"ISFP":{name:"探险家",desc:"灵活且富有魅力的艺术家，时刻准备着探索新的可能性。ISFP 温和敏感，有着独特的审美品味。他们追求自由和真实，喜欢通过行动而非言语表达自己，活在当下。",
+strengths:["独特的审美和艺术感知力","温和友善，让人感到舒适","活在当下，享受生活的点滴","灵活适应，不被框架限制","真诚不做作，做真实的自己"],
+challenges:["不擅长长期规划","情绪波动较大","面对冲突和批评容易退缩","在需要结构和秩序的环境中感到困难","有时过于自我保护"],
+career:["艺术家/设计师","音乐家","摄影师/摄像师","花艺师/厨师","兽医"],
+relation:"ISFP 在关系中追求真实和美感。他们是温柔体贴的伴侣，会用细微的行动来表达爱。他们需要伴侣接受他们的多变，欣赏他们的独特，给他们空间做自己。",
+famous:"大卫·鲍伊、鲍勃·迪伦、玛丽莲·梦露"},
+"ESTP":{name:"企业家",desc:"聪明、精力充沛且善于感知的人，真正享受生活带来的刺激。ESTP 行动力强，善于应对即兴挑战。他们务实灵活，喜欢冒险和竞争，在需要快速反应的环境中表现出色。",
+strengths:["行动力超强，说干就干","善于处理危机和即时问题","务实而不空谈","社交能力强，有魅力","灵活机敏，能快速适应新环境"],
+challenges:["缺乏长期规划和耐心","可能过于冒险和鲁莽","对规章和流程不太耐烦","情感沟通深度有待加强","有时不够敏感考虑他人感受"],
+career:["企业家/销售","急救人员/消防员","运动员/教练","演员/主持人","侦探/调查员"],
+relation:"ESTP 在关系中追求刺激和行动。他们是充满惊喜的伴侣——突然的旅行、大胆的约会。他们需要伴侣能跟上他们的节奏，一起享受生活的冒险。",
+famous:"西奥多·罗斯福、麦当娜、欧内斯特·海明威"},
+"ESFP":{name:"表演者",desc:"自发的、精力充沛且热情的表演者——生活在他们身边绝不会无聊。ESFP 热情开朗，善于营造欢乐氛围。他们活在当下，喜欢与人分享体验，天生具有感染力和娱乐才能。",
+strengths:["天生的氛围制造者和社交明星","热情爽朗，极富感染力","务实且活在当下，善于享受生活","待人真诚大方，不钩心斗角","适应力强，善于带动大家"],
+challenges:["不擅长长期规划和抽象思考","做决策时容易冲动","在需要深度专注的任务中容易分心","有时候过于追求别人的关注和认可","情感深度有待加强"],
+career:["演员/表演艺术家","导游/主持人","销售/市场","幼教/儿童工作者","活动策划"],
+relation:"ESFP 在关系中追求快乐和当下的连接。他们是阳光般温暖、充满活力的伴侣。他们需要一个能陪他们一起尽情享受生活、也愿意在他们低落时给予关注的人。",
+famous:"玛丽莲·梦露、埃尔维斯·普雷斯利、休·杰克曼"},
 };
 
-const types = {
-  "INTJ": { name: "建筑师", desc: "富有想象力和战略性的思想家，一切都在计划之中。INTJ 是独立的、有远见的人，善于看到全局并制定长期计划。他们追求能力和效率，对自己和他人都有很高的标准。虽然外表冷静理性，但内心有着强烈的信念和对知识的渴望。" },
-  "INTP": { name: "逻辑学家", desc: "具有创造力的发明家，对知识有着不可抑制的渴望。INTP 善于发现逻辑上的不一致，喜欢探索理论和抽象概念。他们独立思考，追求理解事物的本质，可能显得心不在焉，因为大脑总是在处理各种想法。" },
-  "ENTJ": { name: "指挥官", desc: "大胆、富有想象力且意志强大的领导者，总能找到或创造解决方法。ENTJ 是天生的领导者，善于组织和推动项目。他们果断、自信，注重效率和结果，能够激励他人朝着共同目标前进。" },
-  "ENTP": { name: "辩论家", desc: "聪明好奇的思想家，不会放过任何智力上的挑战。ENTP 喜欢探索各种可能性，善于发现事物之间的联系。他们思维敏捷、口才出众，享受思想碰撞的过程，总能提出新颖的观点。" },
-  "INFJ": { name: "提倡者", desc: "安静而神秘，同时富有感召力的理想主义者。INFJ 有着深刻的洞察力，能够理解他人的情感和动机。他们追求有意义的人生，致力于帮助他人和改善世界，有着坚定的信念和价值观。" },
-  "INFP": { name: "调停者", desc: "诗意、善良且利他的人，总是热衷于帮助好的事业。INFP 有着丰富的内心世界，重视真诚和深度。他们富有同理心和创造力，追求与自己价值观一致的生活方式。" },
-  "ENFJ": { name: "主人公", desc: "富有感召力的领导者，能够吸引听众并使他们着迷。ENFJ 天生善于理解他人，能够激发他人的潜能。他们注重人际关系，善于沟通协调，致力于为集体创造积极的影响。" },
-  "ENFP": { name: "竞选者", desc: "热情、富有创造力且善于社交的自由精神，总能找到微笑的理由。ENFP 充满热情和想象力，善于看到他人的潜力。他们喜欢探索新的可能性，追求有意义的连接和体验。" },
-  "ISTJ": { name: "物流师", desc: "实用且注重事实的个体，其可靠性无可怀疑。ISTJ 认真负责，注重细节和传统。他们善于组织和执行，会一丝不苟地完成承诺的事情，是值得信赖的伙伴。" },
-  "ISFJ": { name: "守卫者", desc: "非常专注且温暖的守护者，时刻准备着保护所爱之人。ISFJ 谦逊体贴，善于观察他人的需求。他们忠诚可靠，默默付出，重视和谐与稳定，在需要的地方提供支持。" },
-  "ESTJ": { name: "总经理", desc: "出色的管理者，在管理事务或人员方面无与伦比。ESTJ 务实果断，重视秩序和规则。他们善于组织和领导，注重效率和传统，会确保团队按照既定标准运作。" },
-  "ESFJ": { name: "执政官", desc: "极有同情心、受人欢迎且善于社交的人，总是热心帮助他人。ESFJ 温暖友善，重视和谐的人际关系。他们善于照顾他人的需求，喜欢创造温馨的氛围，是团队中的凝聚力量。" },
-  "ISTP": { name: "鉴赏家", desc: "大胆且实际的实验家，擅长使用各种工具。ISTP 灵活冷静，善于解决实际问题。他们喜欢探索事物的运作原理，动手能力强，在压力下能保持冷静并找到解决方案。" },
-  "ISFP": { name: "探险家", desc: "灵活且富有魅力的艺术家，时刻准备着探索新的可能性。ISFP 温和敏感，有着独特的审美品味。他们追求自由和真实，喜欢通过行动而非言语表达自己，活在当下。" },
-  "ESTP": { name: "企业家", desc: "聪明、精力充沛且善于感知的人，真正享受生活带来的刺激。ESTP 行动力强，善于应对即兴挑战。他们务实灵活，喜欢冒险和竞争，在需要快速反应的环境中表现出色。" },
-  "ESFP": { name: "表演者", desc: "自发的、精力充沛且热情的表演者——生活在他们身边绝不会无聊。ESFP 热情开朗，善于营造欢乐氛围。他们活在当下，喜欢与人分享体验，天生具有感染力和娱乐才能。" },
+const compat = {
+INTJ:[4,2,5,4,3,3,1,2,4,5,2,3,4,3,3,2],
+INTP:[4,4,3,5,1,2,2,3,5,4,3,2,2,4,3,1],
+ENTJ:[5,3,4,5,2,1,3,4,4,3,2,1,5,4,2,3],
+ENTP:[3,5,5,4,3,3,2,4,2,2,5,4,1,3,4,2],
+INFJ:[3,1,2,2,4,5,3,4,1,2,4,5,2,1,3,4],
+INFP:[2,2,1,3,5,4,4,5,3,2,1,4,3,2,4,5],
+ENFJ:[3,2,3,2,4,4,5,5,1,3,4,2,2,1,5,4],
+ENFP:[2,3,4,3,3,5,5,4,2,1,3,5,4,2,1,4],
+ISTJ:[5,4,4,3,1,2,1,1,4,5,2,3,5,4,3,2],
+ISFJ:[4,5,3,2,2,2,3,1,5,4,1,2,3,5,2,3],
+ESTJ:[3,3,2,5,4,1,4,3,3,2,4,5,4,2,1,3],
+ESFJ:[2,2,1,4,5,3,2,5,2,3,5,4,1,3,3,2],
+ISTP:[4,2,5,1,2,3,2,4,5,3,4,1,4,2,3,5],
+ISFP:[3,4,4,2,1,2,1,2,3,5,2,3,2,4,5,4],
+ESTP:[3,3,2,5,2,4,5,1,3,2,1,4,3,5,4,2],
+ESFP:[2,1,3,2,4,5,4,4,2,3,3,2,4,3,2,5],
 };
 
-let current = 0;
-let answers = [];
+const typeList = Object.keys(compat);
+
+function getCompatLevel(score) {
+  if (score >= 4) return { cls: 'good', label: '很合拍' };
+  if (score >= 3) return { cls: 'ok', label: '还不错' };
+  return { cls: 'hard', label: '需磨合' };
+}
+
+let currentQ = 0, answers = [], selectedQuestions = [];
+let dims = ['EI','SN','TF','JP'];
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 function startTest() {
-  document.getElementById("welcome").classList.add("hidden");
-  document.getElementById("questionPage").classList.remove("hidden");
-  current = 0;
+  if (!allQuestions.length) {
+    showToast('题库还在加载中，请稍等~');
+    return;
+  }
+  const nick = document.getElementById('nickname').value.trim() || '匿名';
+  // Select 25 questions per dimension randomly
+  selectedQuestions = [];
+  dims.forEach(d => {
+    const pool = allQuestions.filter(q => q.dim === d);
+    const shuffled = shuffle(pool);
+    selectedQuestions.push(...shuffled.slice(0, 25));
+  });
+  // Shuffle all selected questions so dimensions are mixed
+  selectedQuestions = shuffle(selectedQuestions);
+  currentQ = 0;
   answers = [];
+
+  document.getElementById('welcome').classList.add('hidden');
+  document.getElementById('questionPage').classList.remove('hidden');
   showQuestion();
 }
 
 function showQuestion() {
-  const q = questions[current];
-  document.getElementById("progressFill").style.width = ((current + 1) / questions.length * 100) + "%";
-  document.getElementById("progressText").textContent = `${current + 1} / ${questions.length}`;
-  document.getElementById("dimLabel").textContent = dimNames[q.dim].join(" / ");
-  document.getElementById("questionText").textContent = q.text;
+  const q = selectedQuestions[currentQ];
+  document.getElementById('progressFill').style.width = ((currentQ + 1) / 100 * 100) + '%';
+  document.getElementById('progressText').textContent = (currentQ + 1) + ' / 100';
+  document.getElementById('dimLabel').textContent = dimNames[q.dim].join(' / ');
+  document.getElementById('questionText').textContent = q.text;
 
-  const optsEl = document.getElementById("options");
-  optsEl.innerHTML = "";
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
   q.opts.forEach((text, i) => {
-    const btn = document.createElement("button");
-    btn.className = "option-btn";
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
     btn.textContent = text;
     btn.onclick = () => selectAnswer(i);
     optsEl.appendChild(btn);
   });
+  document.getElementById('questionPage').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function selectAnswer(idx) {
-  const q = questions[current];
+  const q = selectedQuestions[currentQ];
   answers.push({ dim: q.dim, score: q.scores[idx] });
-
-  current++;
-  if (current < questions.length) {
+  currentQ++;
+  if (currentQ < 100) {
     showQuestion();
   } else {
-    showResult();
+    submitAndShowResult();
   }
 }
 
-function showResult() {
-  document.getElementById("questionPage").classList.add("hidden");
-  document.getElementById("resultPage").classList.remove("hidden");
-
+function submitAndShowResult() {
+  const nick = document.getElementById('nickname').value.trim() || '匿名';
   const scores = { EI: 0, SN: 0, TF: 0, JP: 0 };
   answers.forEach(a => { scores[a.dim] += a.score; });
 
   const type =
-    (scores.EI >= 0 ? "E" : "I") +
-    (scores.SN >= 0 ? "N" : "S") +
-    (scores.TF >= 0 ? "F" : "T") +
-    (scores.JP >= 0 ? "P" : "J");
+    (scores.EI >= 0 ? 'E' : 'I') +
+    (scores.SN >= 0 ? 'N' : 'S') +
+    (scores.TF >= 0 ? 'F' : 'T') +
+    (scores.JP >= 0 ? 'P' : 'J');
 
-  document.getElementById("typeCode").textContent = type;
-  document.getElementById("typeName").textContent = types[type].name;
-  document.getElementById("typeDesc").textContent = types[type].desc;
+  showResult(type, scores);
+  submitToSheets(nick, type, scores);
+}
+
+function showResult(type, scores) {
+  document.getElementById('questionPage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+
+  const td = typeData[type];
+  document.getElementById('typeCode').textContent = type;
+  document.getElementById('typeName').textContent = td.name;
+  document.getElementById('typeDesc').textContent = td.desc;
+
+  document.getElementById('strengths').innerHTML = td.strengths.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('challenges').innerHTML = td.challenges.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('career').innerHTML = td.career.map(s => `<li>${s}</li>`).join('');
+  document.getElementById('relation').textContent = td.relation;
+  document.getElementById('famous').textContent = td.famous;
 
   // Dimension bars
-  const barsEl = document.getElementById("dimBars");
-  barsEl.innerHTML = "";
-  const dims = [
-    { key: "EI", left: "E", right: "I" },
-    { key: "SN", left: "S", right: "N" },
-    { key: "TF", left: "T", right: "F" },
-    { key: "JP", left: "J", right: "P" },
+  const barsEl = document.getElementById('dimBars');
+  barsEl.innerHTML = '';
+  const dimMeta = [
+    { key: 'EI', left: 'E 外向', right: 'I 内向' },
+    { key: 'SN', left: 'S 实感', right: 'N 直觉' },
+    { key: 'TF', left: 'T 思考', right: 'F 情感' },
+    { key: 'JP', left: 'J 判断', right: 'P 感知' },
   ];
-  dims.forEach(d => {
+  dimMeta.forEach(d => {
     const raw = scores[d.key];
-    const maxAbs = 6; // max possible for each dim
+    const maxAbs = 25;
     const pct = Math.min(Math.abs(raw) / maxAbs * 100, 100);
     const leftPct = raw >= 0 ? pct : 0;
     const rightPct = raw < 0 ? pct : 0;
-
-    const row = document.createElement("div");
-    row.className = "dim-row";
+    const row = document.createElement('div');
+    row.className = 'dim-row';
     row.innerHTML = `
       <div class="label"><span>${d.left} ${Math.round(leftPct)}%</span><span>${d.right} ${Math.round(rightPct)}%</span></div>
       <div class="bar-bg"><div class="bar-left" style="width:${leftPct}%"></div><div class="bar-right" style="width:${rightPct}%"></div></div>
     `;
     barsEl.appendChild(row);
   });
+
+  // Compat grid
+  const compatGrid = document.getElementById('compatGrid');
+  compatGrid.innerHTML = '';
+  const myIdx = typeList.indexOf(type);
+  const myCompat = compat[type];
+  typeList.forEach((t, i) => {
+    const lvl = getCompatLevel(myCompat[i]);
+    const div = document.createElement('div');
+    div.className = `compat-item ${lvl.cls}`;
+    div.innerHTML = `<div>${t}</div><div class="level">${lvl.label}</div>`;
+    compatGrid.appendChild(div);
+  });
+
+  document.getElementById('resultPage').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function submitToSheets(nick, type, scores) {
+  const url = 'https://script.google.com/macros/s/AKfycbz8-GOOGLE_APPS_SCRIPT_URL/exec';
+  const data = {
+    nickname: nick,
+    type: type,
+    ei_score: scores.EI,
+    sn_score: scores.SN,
+    tf_score: scores.TF,
+    jp_score: scores.JP,
+    ei_pct: Math.round(Math.abs(scores.EI) / 25 * 100),
+    sn_pct: Math.round(Math.abs(scores.SN) / 25 * 100),
+    tf_pct: Math.round(Math.abs(scores.TF) / 25 * 100),
+    jp_pct: Math.round(Math.abs(scores.JP) / 25 * 100),
+    time: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
+  };
+  fetch(url, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {}); // Silent fail - Google Sheets is optional
 }
 
 function restart() {
-  document.getElementById("resultPage").classList.add("hidden");
-  document.getElementById("welcome").classList.remove("hidden");
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('welcome').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
 }
 </script>
 </body>

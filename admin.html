@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBTI 管理后台</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  min-height:100vh;color:#e0e0e0;
+}
+.header{
+  padding:16px 24px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.header h1{
+  font-size:1.2rem;background:linear-gradient(90deg,#a78bfa,#60a5fa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.header .logout{font-size:.85rem;color:#94a3b8;cursor:pointer}
+.header .logout:hover{color:#f87171}
+
+.container{max-width:1200px;margin:0 auto;padding:24px}
+
+/* Top stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-bottom:20px}
+.stat-card{
+  background:rgba(255,255,255,.04);border-radius:12px;padding:16px;text-align:center;
+  border:1px solid rgba(255,255,255,.06);
+}
+.stat-card .count{font-size:1.6rem;font-weight:700;color:#a78bfa}
+.stat-card .label{font-size:.8rem;color:#64748b;margin-top:4px}
+
+/* Chart */
+.chart-wrap{display:flex;flex-wrap:wrap;gap:24px;margin-bottom:20px}
+.chart-box{
+  background:rgba(255,255,255,.04);border-radius:16px;padding:24px;
+  border:1px solid rgba(255,255,255,.06);flex:1;min-width:300px;
+}
+.chart-box h3{font-size:.95rem;color:#94a3b8;margin-bottom:16px}
+
+.canvas-wrap{position:relative;width:260px;height:260px;margin:0 auto}
+canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.8rem;color:#94a3b8}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filter-bar select{
+  padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:#e0e0e0;font-size:.9rem;outline:none;
+}
+.filter-bar select:focus{border-color:#7c3aed}
+.filter-bar .count-text{font-size:.85rem;color:#64748b}
+.filter-bar button{
+  padding:8px 20px;border-radius:8px;border:1px solid rgba(255,255,255,.15);
+  background:transparent;color:#94a3b8;cursor:pointer;font-size:.85rem;
+  transition:all .2s;
+}
+.filter-bar button:hover{border-color:#7c3aed;color:#e0e0e0}
+.filter-bar .btn-export{background:rgba(124,58,237,.2);border-color:#7c3aed;color:#a78bfa}
+.filter-bar .btn-export:hover{background:rgba(124,58,237,.35)}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:16px;border:1px solid rgba(255,255,255,.06)}
+table{width:100%;border-collapse:collapse}
+th{
+  text-align:left;padding:14px 16px;font-size:.8rem;color:#64748b;
+  text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.02);
+}
+td{padding:12px 16px;font-size:.9rem;color:#cbd5e1;border-bottom:1px solid rgba(255,255,255,.03)}
+tr:hover td{background:rgba(124,58,237,.06)}
+.type-badge{
+  display:inline-block;padding:2px 10px;border-radius:6px;
+  font-size:.8rem;font-weight:600;background:rgba(124,58,237,.2);color:#a78bfa;
+}
+
+/* Login */
+.login-wrap{
+  display:flex;justify-content:center;align-items:center;min-height:100vh;
+}
+.login-box{
+  background:rgba(255,255,255,.04);border-radius:20px;padding:40px;
+  border:1px solid rgba(255,255,255,.06);text-align:center;width:340px;
+}
+.login-box h2{
+  font-size:1.4rem;margin-bottom:24px;
+  background:linear-gradient(90deg,#a78bfa,#60a5fa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.login-box input{
+  width:100%;padding:12px 16px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);
+  color:#f1f5f9;font-size:1rem;outline:none;margin-bottom:16px;text-align:center;
+}
+.login-box input:focus{border-color:#7c3aed}
+.login-box .error{color:#f87171;font-size:.85rem;margin-bottom:8px;display:none}
+.login-box button{width:100%}
+
+.hidden{display:none !important}
+
+/* Loading */
+.spinner{
+  width:30px;height:30px;margin:40px auto;
+  border:3px solid rgba(124,58,237,.2);border-top-color:#7c3aed;
+  border-radius:50%;animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:768px){
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .chart-wrap{flex-direction:column}
+  .container{padding:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="loginPage" class="login-wrap">
+  <div class="login-box">
+    <h2>管理后台</h2>
+    <input type="password" id="password" placeholder="请输入管理密码" onkeydown="if(event.key==='Enter')login()">
+    <p class="error" id="loginError">密码错误</p>
+    <button class="btn btn-primary" onclick="login()">进入后台</button>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="hidden">
+  <div class="header">
+    <h1>MBTI 测试数据后台</h1>
+    <span class="logout" onclick="logout()">退出</span>
+  </div>
+  <div class="container">
+    <div class="stats" id="stats"></div>
+
+    <div class="chart-wrap">
+      <div class="chart-box">
+        <h3>16 种类型分布</h3>
+        <div class="canvas-wrap">
+          <canvas id="pieChart" width="520" height="520"></canvas>
+        </div>
+        <div class="legend" id="pieLegend"></div>
+      </div>
+      <div class="chart-box">
+        <h3>各维度倾向</h3>
+        <div class="canvas-wrap" style="width:200px;height:200px">
+          <canvas id="dimChart" width="400" height="400"></canvas>
+        </div>
+        <div class="legend" id="dimLegend"></div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <select id="typeFilter" onchange="renderTable()">
+        <option value="">全部类型</option>
+      </select>
+      <span class="count-text" id="resultCount"></span>
+      <button class="btn-export" onclick="exportCSV()">导出 CSV</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>昵称</th>
+            <th>类型</th>
+            <th>E/I</th>
+            <th>S/N</th>
+            <th>T/F</th>
+            <th>J/P</th>
+            <th>提交时间</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="8" style="text-align:center;padding:40px">加载中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PW = 'mbti2026';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbz8-GOOGLE_APPS_SCRIPT_URL/exec';
+
+const COLORS = [
+  '#a78bfa','#60a5fa','#34d399','#f87171','#fbbf24','#f472b6',
+  '#a78bfa','#60a5fa','#34d399','#f87171','#fbbf24','#f472b6',
+  '#818cf8','#38bdf8','#4ade80','#fb923c',
+];
+
+const typeList = ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'];
+
+let allData = [];
+
+function login() {
+  if (document.getElementById('password').value === ADMIN_PW) {
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.getElementById('loginError').style.display = 'none';
+    fetchData();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function logout() {
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+  document.getElementById('password').value = '';
+  allData = [];
+}
+
+async function fetchData() {
+  try {
+    const res = await fetch(SHEETS_URL + '?action=read');
+    const json = await res.json();
+    allData = json.data || [];
+  } catch(e) {
+    console.error('Fetch error:', e);
+    useDemoData();
+  }
+
+  if (!allData.length) useDemoData();
+
+  updateStats();
+  updateTypeFilter();
+  renderTable();
+  drawPieChart();
+  drawDimChart();
+}
+
+function useDemoData() {
+  const demo = [];
+  const names = ['小明','小红','阿强','小美','大伟','琳琳','浩然','芷若','志明','春娇'];
+  for (let i = 0; i < 43; i++) {
+    const type = typeList[Math.floor(Math.random() * 16)];
+    demo.push({
+      nickname: names[Math.floor(Math.random() * names.length)],
+      type: type,
+      ei_pct: Math.floor(Math.random() * 100),
+      sn_pct: Math.floor(Math.random() * 100),
+      tf_pct: Math.floor(Math.random() * 100),
+      jp_pct: Math.floor(Math.random() * 100),
+      time: `2026-05-${String(Math.floor(Math.random() * 30) + 1).padStart(2,'0')} 1${Math.floor(Math.random()*9)}:${String(Math.floor(Math.random()*60)).padStart(2,'0')}`
+    });
+  }
+  allData = demo;
+}
+
+function updateStats() {
+  const stats = document.getElementById('stats');
+  const count = {};
+  allData.forEach(d => { count[d.type] = (count[d.type] || 0) + 1; });
+  const entries = Object.entries(count).sort((a, b) => b[1] - a[1]);
+  stats.innerHTML = entries.map(([t, c]) =>
+    `<div class="stat-card"><div class="count">${c}</div><div class="label">${t}</div></div>`
+  ).join('') + `<div class="stat-card"><div class="count">${allData.length}</div><div class="label">总计</div></div>`;
+}
+
+function updateTypeFilter() {
+  const sel = document.getElementById('typeFilter');
+  const count = {};
+  allData.forEach(d => { count[d.type] = (count[d.type] || 0) + 1; });
+  sel.innerHTML = '<option value="">全部类型</option>' +
+    Object.entries(count).sort((a,b) => b[1]-a[1])
+      .map(([t,c]) => `<option value="${t}">${t} (${c})</option>`).join('');
+}
+
+function renderTable() {
+  const filter = document.getElementById('typeFilter').value;
+  let data = filter ? allData.filter(d => d.type === filter) : allData;
+  document.getElementById('resultCount').textContent = `共 ${data.length} 条记录`;
+
+  const tbody = document.getElementById('tableBody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:#64748b">暂无数据</td></tr>';
+    return;
+  }
+  data = [...data].reverse(); // newest first
+  tbody.innerHTML = data.map((d, i) => `
+    <tr>
+      <td style="color:#64748b">${data.length - i}</td>
+      <td>${d.nickname || '匿名'}</td>
+      <td><span class="type-badge">${d.type}</span></td>
+      <td>${d.ei_pct != null ? d.ei_pct + '%' : '-'}</td>
+      <td>${d.sn_pct != null ? d.sn_pct + '%' : '-'}</td>
+      <td>${d.tf_pct != null ? d.tf_pct + '%' : '-'}</td>
+      <td>${d.jp_pct != null ? d.jp_pct + '%' : '-'}</td>
+      <td style="color:#64748b">${d.time || '-'}</td>
+    </tr>
+  `).join('');
+}
+
+function drawPieChart() {
+  const canvas = document.getElementById('pieChart');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width / 2, h = canvas.height / 2, r = 180;
+  ctx.clearRect(0, 0, w * 2, h * 2);
+
+  const count = {};
+  allData.forEach(d => { count[d.type] = (count[d.type] || 0) + 1; });
+  const entries = Object.entries(count).sort((a, b) => b[1] - a[1]);
+  const total = entries.reduce((s, e) => s + e[1], 0);
+
+  let startAngle = -Math.PI / 2;
+  entries.forEach(([type, cnt], i) => {
+    const slice = cnt / total * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(w, h);
+    ctx.arc(w, h, r, startAngle, startAngle + slice);
+    ctx.closePath();
+    ctx.fillStyle = COLORS[i % COLORS.length];
+    ctx.fill();
+    startAngle += slice;
+  });
+
+  const legend = document.getElementById('pieLegend');
+  legend.innerHTML = entries.map(([t, c], i) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${COLORS[i]}"></div>${t} (${c})</div>`
+  ).join('');
+}
+
+function drawDimChart() {
+  const canvas = document.getElementById('dimChart');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width / 2, h = canvas.height / 2, r = 80;
+  ctx.clearRect(0, 0, w * 2, h * 2);
+
+  const dims = ['EI','SN','TF','JP'];
+  const counts = [0, 0, 0, 0];
+  const typesByDim = [
+    ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP'],
+    ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP'],
+    ['INTJ','INTP','ENTJ','ENTP','ISTJ','ISFJ','ESTJ','ESFJ'],
+    ['INTJ','INFJ','ISTJ','ISFJ','ENTJ','ENFJ','ESTJ','ESFJ'],
+  ];
+  const oppositesByDim = [
+    ['ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'],
+    ['ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'],
+    ['INFJ','INFP','ENFJ','ENFP','ISTP','ISFP','ESTP','ESFP'],
+    ['INTP','INFP','ENTP','ENFP','ISTP','ISFP','ESTP','ESFP'],
+  ];
+  allData.forEach(d => {
+    dims.forEach((dim, i) => {
+      if (typesByDim[i].includes(d.type)) counts[i]++;
+      else if (oppositesByDim[i].includes(d.type)) counts[i]--;
+    });
+  });
+
+  const legend = document.getElementById('dimLegend');
+  legend.innerHTML = [
+    { label: 'E 外向', count: counts[0] > 0 ? counts[0] : 0 },
+    { label: 'I 内向', count: counts[0] < 0 ? -counts[0] : 0 },
+    { label: 'S 实感', count: counts[1] < 0 ? -counts[1] : 0 },
+    { label: 'N 直觉', count: counts[1] > 0 ? counts[1] : 0 },
+    { label: 'T 思考', count: counts[2] > 0 ? counts[2] : 0 },
+    { label: 'F 情感', count: counts[2] < 0 ? -counts[2] : 0 },
+    { label: 'J 判断', count: counts[3] > 0 ? counts[3] : 0 },
+    { label: 'P 感知', count: counts[3] < 0 ? -counts[3] : 0 },
+  ].map((d, i) => `<div class="legend-item"><div class="legend-dot" style="background:${COLORS[i]}"></div>${d.label}: ${d.count}人</div>`).join('');
+
+  // Bar chart
+  const barW = 24, gap = 48;
+  const absCounts = counts.map(Math.abs);
+  const maxC = Math.max(...absCounts, 1);
+  dims.forEach((dim, i) => {
+    const leftVal = counts[i] > 0 ? counts[i] : 0;
+    const rightVal = counts[i] < 0 ? -counts[i] : 0;
+    const leftH = leftVal / maxC * r;
+    const rightH = rightVal / maxC * r;
+
+    // Left bar
+    ctx.fillStyle = COLORS[i * 2];
+    ctx.fillRect(w - gap - leftH - barW, h - 40 + i * gap + 4, leftH, barW);
+
+    // Right bar
+    ctx.fillStyle = COLORS[i * 2 + 1];
+    ctx.fillRect(w + gap, h - 40 + i * gap + 4, rightH, barW);
+
+    // Center line
+    ctx.strokeStyle = 'rgba(255,255,255,.1)';
+    ctx.beginPath();
+    ctx.moveTo(w, h - 40 + i * gap + 4);
+    ctx.lineTo(w, h - 40 + i * gap + 4 + barW);
+    ctx.stroke();
+
+    // Labels
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(dim.split('').join('/'), w - gap - barW - 8, h - 40 + i * gap + 4 + barW / 2 + 4);
+  });
+}
+
+function exportCSV() {
+  const filter = document.getElementById('typeFilter').value;
+  let data = filter ? allData.filter(d => d.type === filter) : allData;
+  const header = '昵称,类型,E/I倾向,S/N倾向,T/F倾向,J/P倾向,提交时间';
+  const rows = data.map(d =>
+    `${d.nickname || '匿名'},${d.type},${d.ei_pct || '-'},${d.sn_pct || '-'},${d.tf_pct || '-'},${d.jp_pct || '-'},${d.time || '-'}`
+  );
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `MBTI_数据_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Enter key for login
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
+});
+</script>
+</body>
+</html>
