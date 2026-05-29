@@ -219,21 +219,9 @@ body{
 </div>
 </div>
 
-<script src="questions.json"></script>
+<script src="questions.js"></script>
 <script>
-// Load questions from external JSON
-let allQuestions = [];
-
-async function fetchQuestions() {
-  try {
-    const res = await fetch('questions.json');
-    allQuestions = await res.json();
-  } catch(e) {
-    console.error('Failed to load questions:', e);
-    showToast('题库加载失败，请刷新页面重试');
-  }
-}
-fetchQuestions();
+// 题库已通过 questions.js 加载为 window.MBTI_QUESTIONS
 
 const dimNames = {EI:["外向 E","内向 I"],SN:["实感 S","直觉 N"],TF:["思考 T","情感 F"],JP:["判断 J","感知 P"]};
 
@@ -376,7 +364,7 @@ function shuffle(arr) {
 }
 
 function startTest() {
-  if (!allQuestions.length) {
+  if (!window.MBTI_QUESTIONS.length) {
     showToast('题库还在加载中，请稍等~');
     return;
   }
@@ -384,7 +372,7 @@ function startTest() {
   // Select 25 questions per dimension randomly
   selectedQuestions = [];
   dims.forEach(d => {
-    const pool = allQuestions.filter(q => q.dim === d);
+    const pool = window.MBTI_QUESTIONS.filter(q => q.dim === d);
     const shuffled = shuffle(pool);
     selectedQuestions.push(...shuffled.slice(0, 25));
   });
