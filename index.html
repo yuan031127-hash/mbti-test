@@ -499,7 +499,12 @@ function showResult(type, scores) {
 }
 
 function submitToSheets(nick, type, scores) {
-  const url = 'https://script.google.com/macros/s/AKfycbz8-GOOGLE_APPS_SCRIPT_URL/exec';
+  // Google Sheets 部署后才生效，没配置则静默跳过
+  const url = 'https://script.google.com/macros/s/AKfycbz8-你的脚本ID/exec';
+  if (url.includes('你的脚本ID')) {
+    showToast('请在 apps-script.gs 中按步骤部署 Google Sheets');
+    return;
+  }
   const data = {
     nickname: nick,
     type: type,
