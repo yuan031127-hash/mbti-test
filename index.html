@@ -133,6 +133,249 @@ body{
   .result-header .type-code{font-size:2.4rem}
   .section{padding:16px}
 }
+
+/* === NEW: Timer === */
+.timer-wrap {
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: .85rem;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+  font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+}
+
+/* === NEW: Back button === */
+.btn-back {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  color: #94a3b8;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: .85rem;
+  cursor: pointer;
+  z-index: 100;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-back:hover {
+  background: rgba(124,58,237,.15);
+  border-color: rgba(124,58,237,.4);
+  color: #e0e0e0;
+}
+
+/* === NEW: Summary Card === */
+.summary-card {
+  background: linear-gradient(135deg, rgba(124,58,237,.12), rgba(59,130,246,.12));
+  border: 1px solid rgba(124,58,237,.25);
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 20%, rgba(167,139,250,.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(52,211,153,.06) 0%, transparent 50%);
+  pointer-events: none;
+}
+.summary-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: .75rem;
+  font-weight: 600;
+  margin-top: 8px;
+}
+.badge-rare { background: rgba(239,68,68,.15); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+.badge-uncommon { background: rgba(250,204,21,.12); color: #facc15; border: 1px solid rgba(250,204,21,.25); }
+.badge-common { background: rgba(52,211,153,.12); color: #34d399; border: 1px solid rgba(52,211,153,.25); }
+
+/* === NEW: Distribution Stats === */
+.distribution-bar {
+  height: 8px;
+  background: #1e293b;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 6px;
+  position: relative;
+}
+.distribution-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  border-radius: 4px;
+  transition: width .8s ease;
+}
+.distribution-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: .82rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* === NEW: Answer Breakdown === */
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.breakdown-item {
+  background: rgba(255,255,255,.03);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+.breakdown-item .bd-label {
+  font-size: .75rem;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+.breakdown-item .bd-score {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #a78bfa;
+}
+
+/* === NEW: Action buttons row === */
+.action-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 16px;
+}
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* === NEW: History page === */
+.history-list { max-height: 400px; overflow-y: auto; }
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: rgba(255,255,255,.03);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all .2s;
+  border: 1px solid transparent;
+}
+.history-item:hover {
+  background: rgba(124,58,237,.1);
+  border-color: rgba(124,58,237,.25);
+}
+.history-type {
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, #a78bfa, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.history-meta {
+  font-size: .78rem;
+  color: #64748b;
+}
+.history-actions {
+  display: flex;
+  gap: 6px;
+}
+.btn-tiny {
+  padding: 4px 10px;
+  font-size: .72rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-tiny:hover {
+  background: rgba(124,58,237,.2);
+  border-color: rgba(124,58,237,.4);
+  color: #e0e0e0;
+}
+.btn-tiny.danger:hover {
+  background: rgba(239,68,68,.2);
+  border-color: rgba(239,68,68,.4);
+  color: #f87171;
+}
+
+/* === NEW: Type code animation === */
+@keyframes typeReveal {
+  0% { filter: blur(10px); opacity: 0; transform: scale(0.8); }
+  50% { filter: blur(4px); opacity: 0.7; }
+  100% { filter: blur(0); opacity: 1; transform: scale(1); }
+}
+.type-code.animate {
+  animation: typeReveal .6s ease-out;
+}
+
+/* === NEW: Share toast === */
+.share-toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #e0e0e0;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: .9rem;
+  z-index: 999;
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  animation: fadeIn .3s;
+}
+
+/* === Improved section nav === */
+.section-nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+.section-nav button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  color: #94a3b8;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+.section-nav button:hover,
+.section-nav button.active {
+  background: rgba(124,58,237,.15);
+  border-color: rgba(124,58,237,.4);
+  color: #e0e0e0;
+}
+
+@media(max-width:480px) {
+  .breakdown-grid { grid-template-columns: 1fr; }
+  .section-nav { gap: 4px; }
+  .section-nav button { padding: 5px 10px; font-size: .72rem; }
+  .btn-back { top: 8px; left: 8px; padding: 6px 12px; font-size: .78rem; }
+  .summary-card { padding: 24px 16px; }
+}
+
 </style>
 </head>
 <body>
@@ -157,6 +400,8 @@ body{
 
 <!-- Question -->
 <div id="questionPage" class="question-page hidden">
+  <button class="btn-back" onclick="goBack()" id="btnBack">← 返回上一题</button>
+  <div class="timer-wrap">⏱️ <span id="timerDisplay">00:00</span></div>
   <div class="progress-wrap">
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
     <div class="progress-text" id="progressText"></div>
@@ -171,6 +416,28 @@ body{
   <div class="result-header">
     <div class="type-code" id="typeCode"></div>
     <div class="type-name" id="typeName"></div>
+    <div id="rarityBadge"></div>
+  </div>
+
+  <!-- Summary Share Card -->
+  <div class="summary-card" id="summaryCard">
+    <div class="type-code" id="summaryType" style="font-size:2.6rem;"></div>
+    <div class="type-name" id="summaryName" style="font-size:1.1rem;"></div>
+    <div id="summaryRarity" style="font-size:.82rem;margin-top:6px;"></div>
+    <div style="margin-top:12px;font-size:.8rem;color:#64748b;">
+      ⏱️ 用时 <span id="summaryTime">--</span> · 📋 100题 · 🔗 mbti-test-bka.pages.dev
+    </div>
+  </div>
+
+  <!-- Section quick nav -->
+  <div class="section-nav" id="sectionNav">
+    <button onclick="scrollToSection('descSection')">概述</button>
+    <button onclick="scrollToSection('dimBars')">维度</button>
+    <button onclick="scrollToSection('breakdownSection')">统计</button>
+    <button onclick="scrollToSection('strengthsSection')">优势</button>
+    <button onclick="scrollToSection('challengesSection')">成长</button>
+    <button onclick="scrollToSection('careerSection')">职业</button>
+    <button onclick="scrollToSection('compatGrid')">兼容</button>
   </div>
 
   <div class="section" id="descSection">
@@ -181,6 +448,14 @@ body{
   <div class="section">
     <h3>维度倾向</h3>
     <div class="dim-bars" id="dimBars"></div>
+  </div>
+
+  <div class="section" id="breakdownSection">
+    <h3>答题统计</h3>
+    <div class="breakdown-grid" id="breakdownGrid"></div>
+    <div style="font-size:.78rem;color:#64748b;margin-top:12px;text-align:center;">
+      📊 每题 +1/-1，满分 25 分，0 为中性 · 越接近两端倾向越明显
+    </div>
   </div>
 
   <div class="section" id="strengthsSection">
@@ -213,9 +488,24 @@ body{
     <div class="compat-grid" id="compatGrid"></div>
   </div>
 
-  <div class="actions">
-    <button class="btn btn-outline" onclick="restart()">重新测试</button>
+  <div class="action-row">
+    <button class="btn btn-outline btn-icon" onclick="copyResult()">📋 复制结果</button>
+    <button class="btn btn-outline btn-icon" onclick="shareResult()">🔗 分享链接</button>
+    <button class="btn btn-outline btn-icon" onclick="showHistory()">📜 历史记录</button>
+    <button class="btn btn-outline btn-icon" onclick="restart()">🔄 重新测试</button>
   </div>
+<!-- History -->
+<div id="historyPage" class="result-page hidden">
+  <div style="text-align:center;margin-bottom:24px;">
+    <h2 style="color:#a78bfa;font-size:1.4rem;">📜 测试历史</h2>
+    <p style="color:#64748b;font-size:.85rem;">本地保存的测试记录</p>
+  </div>
+  <div class="history-list" id="historyList"></div>
+  <div class="actions" style="margin-top:16px;">
+    <button class="btn btn-outline" onclick="clearHistory()">🗑️ 清空历史</button>
+    <button class="btn btn-outline" onclick="backToResult()">← 返回结果</button>
+  </div>
+</div>
 </div>
 </div>
 
@@ -487,12 +777,6 @@ function showResult(type, scores) {
 }
 
 function submitToSheets(nick, type, scores) {
-  // Google Sheets 部署后才生效，没配置则静默跳过
-  const url = 'https://script.google.com/macros/s/AKfycbz8-你的脚本ID/exec';
-  if (url.includes('你的脚本ID')) {
-    showToast('请在 apps-script.gs 中按步骤部署 Google Sheets');
-    return;
-  }
   const data = {
     nickname: nick,
     type: type,
@@ -506,13 +790,402 @@ function submitToSheets(nick, type, scores) {
     jp_pct: Math.round(Math.abs(scores.JP) / 25 * 100),
     time: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
   };
-  fetch(url, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  }).catch(() => {}); // Silent fail - Google Sheets is optional
+
+  // 保存到 localStorage（管理后台读取）
+  var records = JSON.parse(localStorage.getItem('mbti_records') || '[]');
+  records.push(data);
+  localStorage.setItem('mbti_records', JSON.stringify(records));
+
+  // 如果配置了 Google Sheets 则同步提交
+  var sheetsUrl = 'https://script.google.com/macros/s/AKfycbz8-你的脚本ID/exec';
+  if (!sheetsUrl.includes('你的脚本ID')) {
+    fetch(sheetsUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(function(){});
+  }
 }
+
+
+// ===== NEW: Timer =====
+let timerStart = 0, timerInterval = null;
+
+function startTimer() {
+  timerStart = Date.now();
+  timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+  const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+  const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+  const s = String(elapsed % 60).padStart(2, '0');
+  const el = document.getElementById('timerDisplay');
+  if (el) el.textContent = m + ':' + s;
+}
+
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+}
+
+function getElapsedStr() {
+  const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+  const m = Math.floor(elapsed / 60);
+  const s = elapsed % 60;
+  return m > 0 ? m + '分' + s + '秒' : s + '秒';
+}
+
+// ===== NEW: Back button =====
+let answerHistory = [];
+function goBack() {
+  if (currentQ === 0) return;
+  // Remove the last answer
+  const last = answerHistory.pop();
+  currentQ--;
+  // Put the question back into selectedQuestions at the correct position
+  showQuestion();
+}
+
+// ===== NEW: Type distribution data (approximate real-world %) =====
+const typeDistribution = {
+  'ISTJ': 11.6, 'ISFJ': 13.8, 'INFJ': 1.5, 'INTJ': 2.1,
+  'ISTP': 5.4,  'ISFP': 8.8,  'INFP': 4.4,  'INTP': 3.3,
+  'ESTP': 4.3,  'ESFP': 8.5,  'ENFP': 8.1,  'ENTP': 3.2,
+  'ESTJ': 8.7,  'ESFJ': 12.3, 'ENFJ': 2.5,  'ENTJ': 1.8,
+};
+
+function getRarityLabel(pct) {
+  if (pct <= 2.5) return { text: '🌟 稀有类型 (仅占 ' + pct + '%)', cls: 'badge-rare' };
+  if (pct <= 6) return { text: '✨ 少见类型 (占 ' + pct + '%)', cls: 'badge-uncommon' };
+  return { text: '👥 常见类型 (占 ' + pct + '%)', cls: 'badge-common' };
+}
+
+// ===== NEW: URL hash sharing =====
+function encodeResult(type, scores, nick, elapsed) {
+  const data = { t: type, s: scores, n: nick, e: elapsed };
+  return btoa(encodeURIComponent(JSON.stringify(data)));
+}
+
+function decodeResult(hash) {
+  try {
+    return JSON.parse(decodeURIComponent(atob(hash)));
+  } catch(e) { return null; }
+}
+
+function shareResult() {
+  const scores = { EI: 0, SN: 0, TF: 0, JP: 0 };
+  answerHistory.forEach(a => { scores[a.dim] += a.score; });
+  const type = getTypeStr(scores);
+  const nick = document.getElementById('nickname').value.trim() || '匿名';
+  const hash = encodeResult(type, scores, nick, getElapsedStr());
+  const url = location.origin + location.pathname + '#r=' + hash;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 分享链接已复制！'));
+  } else {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('🔗 分享链接已复制！');
+  }
+}
+
+function getTypeStr(scores) {
+  return (scores.EI >= 0 ? 'E' : 'I') +
+         (scores.SN >= 0 ? 'N' : 'S') +
+         (scores.TF >= 0 ? 'F' : 'T') +
+         (scores.JP >= 0 ? 'P' : 'J');
+}
+
+// ===== NEW: Copy result as text =====
+function copyResult() {
+  const nick = document.getElementById('nickname').value.trim() || '匿名';
+  const type = currentResultType;
+  const td = typeData[type];
+  const elapsed = getElapsedStr();
+  const rarity = typeDistribution[type];
+  const rarityLabel = getRarityLabel(rarity).text;
+
+  const text = `🔮 MBTI 性格测试结果
+
+📌 类型：${type} - ${td.name}
+${rarityLabel}
+⏱️ 用时：${elapsed}
+
+📝 性格概述：
+${td.desc}
+
+💪 核心优势：
+${td.strengths.map((s,i) => (i+1) + '. ' + s).join('\n')}
+
+🌱 成长建议：
+${td.challenges.map((s,i) => (i+1) + '. ' + s).join('\n')}
+
+💼 职业方向：${td.career.join('、')}
+
+👥 人际关系：${td.relation}
+
+🌟 相似名人：${td.famous}
+
+🔗 免费测试地址：mbti-test-bka.pages.dev`;
+
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('📋 结果已复制！可粘贴分享给朋友'));
+  }
+}
+
+let currentResultType = '';
+
+// ===== NEW: History management =====
+function saveToHistory(nick, type, scores) {
+  const records = JSON.parse(localStorage.getItem('mbti_history') || '[]');
+  records.push({
+    nickname: nick,
+    type: type,
+    typeName: typeData[type].name,
+    scores: scores,
+    elapsed: getElapsedStr(),
+    time: new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })
+  });
+  // Keep last 20 records
+  if (records.length > 20) records.shift();
+  localStorage.setItem('mbti_history', JSON.stringify(records));
+}
+
+function showHistory() {
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('historyPage').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const records = JSON.parse(localStorage.getItem('mbti_history') || '[]');
+  const listEl = document.getElementById('historyList');
+  if (records.length === 0) {
+    listEl.innerHTML = '<p style="text-align:center;color:#64748b;padding:40px;">还没有测试记录</p>';
+    return;
+  }
+  listEl.innerHTML = records.reverse().map((r, i) => `
+    <div class="history-item">
+      <div>
+        <div class="history-type">${r.type} · ${r.typeName}</div>
+        <div class="history-meta">${r.nickname || '匿名'} · ${r.elapsed} · ${r.time}</div>
+      </div>
+      <div class="history-actions">
+        <button class="btn-tiny" onclick="viewHistoryResult(${records.length - 1 - i})">查看</button>
+        <button class="btn-tiny danger" onclick="deleteHistory(${records.length - 1 - i})">删除</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function viewHistoryResult(idx) {
+  const records = JSON.parse(localStorage.getItem('mbti_history') || '[]');
+  const r = records[idx];
+  if (!r) return;
+  document.getElementById('historyPage').classList.add('hidden');
+  showResult(r.type, r.scores);
+}
+
+function deleteHistory(idx) {
+  const records = JSON.parse(localStorage.getItem('mbti_history') || '[]');
+  records.splice(idx, 1);
+  localStorage.setItem('mbti_history', JSON.stringify(records));
+  showHistory();
+}
+
+function clearHistory() {
+  if (confirm('确定要清空所有测试历史吗？此操作不可恢复。')) {
+    localStorage.removeItem('mbti_history');
+    showHistory();
+    showToast('历史已清空');
+  }
+}
+
+function backToResult() {
+  document.getElementById('historyPage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== NEW: Scroll to section =====
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Override startTest to include timer + history reset
+const _originalStartTest = startTest;
+startTest = function() {
+  if (!window.MBTI_QUESTIONS.length) {
+    showToast('题库还在加载中，请稍等~');
+    return;
+  }
+  const nick = document.getElementById('nickname').value.trim() || '匿名';
+  selectedQuestions = [];
+  dims.forEach(d => {
+    const pool = window.MBTI_QUESTIONS.filter(q => q.dim === d);
+    const shuffled = shuffle(pool);
+    selectedQuestions.push(...shuffled.slice(0, 25));
+  });
+  selectedQuestions = shuffle(selectedQuestions);
+  currentQ = 0;
+  answerHistory = [];
+  answers = [];
+
+  document.getElementById('welcome').classList.add('hidden');
+  document.getElementById('questionPage').classList.remove('hidden');
+  startTimer();
+  showQuestion();
+};
+
+// Override selectAnswer to track answer history
+const _originalSelectAnswer = selectAnswer;
+selectAnswer = function(idx) {
+  const q = selectedQuestions[currentQ];
+  const ans = { dim: q.dim, score: q.scores[idx], qIdx: currentQ };
+  answers.push(ans);
+  answerHistory.push({ dim: q.dim, score: q.scores[idx], question: q.text, choice: idx });
+  currentQ++;
+
+  // Update back button visibility
+  const backBtn = document.getElementById('btnBack');
+  if (backBtn) backBtn.style.opacity = currentQ > 0 ? '1' : '0.3';
+
+  if (currentQ < 100) {
+    showQuestion();
+  } else {
+    submitAndShowResult();
+  }
+};
+
+// Override goBack to work with answerHistory
+goBack = function() {
+  if (currentQ === 0) return;
+  currentQ--;
+  answers.pop();
+  answerHistory.pop();
+  const backBtn = document.getElementById('btnBack');
+  if (backBtn) backBtn.style.opacity = currentQ > 0 ? '1' : '0.3';
+  showQuestion();
+};
+
+// Override submitAndShowResult to use answerHistory
+const _originalSubmitAndShowResult = submitAndShowResult;
+submitAndShowResult = function() {
+  const nick = document.getElementById('nickname').value.trim() || '匿名';
+  const scores = { EI: 0, SN: 0, TF: 0, JP: 0 };
+  answers.forEach(a => { scores[a.dim] += a.score; });
+
+  const type = getTypeStr(scores);
+  currentResultType = type;
+
+  stopTimer();
+  showResult(type, scores);
+  saveToHistory(nick, type, scores);
+  submitToSheets(nick, type, scores);
+
+  // Check URL hash for shared result
+  // No need to do anything with hash here - it's for incoming shares
+};
+
+// Override showResult to add new features
+const _originalShowResult = showResult;
+showResult = function(type, scores) {
+  _originalShowResult(type, scores);
+
+  // Type code animation
+  const codeEl = document.getElementById('typeCode');
+  if (codeEl) {
+    codeEl.classList.add('animate');
+    setTimeout(() => codeEl.classList.remove('animate'), 700);
+  }
+
+  // Summary card
+  document.getElementById('summaryType').textContent = type;
+  document.getElementById('summaryName').textContent = typeData[type].name;
+  document.getElementById('summaryTime').textContent = getElapsedStr();
+
+  // Rarity badge
+  const rarity = typeDistribution[type] || 5;
+  const rarityInfo = getRarityLabel(rarity);
+  document.getElementById('rarityBadge').innerHTML = '<span class="summary-badge ' + rarityInfo.cls + '">' + rarityInfo.text + '</span>';
+  document.getElementById('summaryRarity').innerHTML = '<span class="summary-badge ' + rarityInfo.cls + '" style="font-size:.78rem;">' + rarityInfo.text + '</span>';
+
+  // Distribution bar
+  const descSection = document.getElementById('descSection');
+  const distDiv = document.createElement('div');
+  distDiv.style.marginTop = '16px';
+  distDiv.innerHTML = '<div style="font-size:.8rem;color:#64748b;margin-bottom:6px;">📊 该类型在人群中的占比</div>' +
+    '<div class="distribution-bar"><div class="distribution-fill" style="width:' + rarity + '%"></div></div>' +
+    '<div class="distribution-label"><span>0%</span><span>' + rarity + '%</span><span>15%</span></div>';
+  // Remove old distribution bar if exists
+  const oldDist = descSection.querySelector('.distribution-bar');
+  if (!oldDist) descSection.appendChild(distDiv);
+
+  // Breakdown grid
+  const breakdownEl = document.getElementById('breakdownGrid');
+  if (breakdownEl) {
+    const dimMeta = [
+      { key: 'EI', left: 'E 外向', right: 'I 内向' },
+      { key: 'SN', left: 'S 实感', right: 'N 直觉' },
+      { key: 'TF', left: 'T 思考', right: 'F 情感' },
+      { key: 'JP', left: 'J 判断', right: 'P 感知' },
+    ];
+    breakdownEl.innerHTML = dimMeta.map(d => {
+      const raw = scores[d.key];
+      const maxAbs = 25;
+      const pct = Math.round(Math.abs(raw) / maxAbs * 100);
+      const leaning = raw > 0 ? d.left.split(' ')[1] : raw < 0 ? d.right.split(' ')[1] : '中性';
+      const leanEmoji = raw > 0 ? '⬅️' : raw < 0 ? '➡️' : '⚖️';
+      return '<div class="breakdown-item">' +
+        '<div class="bd-label">' + d.left + ' · ' + d.right + '</div>' +
+        '<div class="bd-score">' + leanEmoji + ' ' + leaning + ' ' + pct + '%</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // Check for incoming shared result
+  checkSharedResult();
+};
+
+// Override restart to reset timer
+restart = function() {
+  stopTimer();
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('historyPage').classList.add('hidden');
+  document.getElementById('welcome').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Reset timer display
+  const el = document.getElementById('timerDisplay');
+  if (el) el.textContent = '00:00';
+};
+
+// ===== NEW: Handle incoming shared results =====
+function checkSharedResult() {
+  const hash = location.hash;
+  if (hash.startsWith('#r=')) {
+    const data = decodeResult(hash.slice(3));
+    if (data && data.t) {
+      const banner = document.createElement('div');
+      banner.style.cssText = 'text-align:center;padding:12px;background:rgba(124,58,237,.15);border-radius:12px;margin-bottom:16px;font-size:.85rem;color:#a78bfa;';
+      banner.textContent = '📨 这是 ' + (data.n || '好友') + ' 分享的测试结果';
+      const resultPage = document.getElementById('resultPage');
+      resultPage.insertBefore(banner, resultPage.firstChild);
+    }
+  }
+}
+
+// Auto-check on page load
+window.addEventListener('DOMContentLoaded', function() {
+  const hash = location.hash;
+  if (hash.startsWith('#r=')) {
+    const data = decodeResult(hash.slice(3));
+    if (data && data.t) {
+      document.getElementById('nickname').value = '';
+      document.getElementById('welcome').classList.add('hidden');
+      showResult(data.t, data.s);
+    }
+  }
+});
 
 function restart() {
   document.getElementById('resultPage').classList.add('hidden');
